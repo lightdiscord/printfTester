@@ -3,6 +3,7 @@
 # include <unistd.h>
 # include <string.h>
 # include <sys/wait.h>
+# include <locale.h>
 # define B_SIZE 4096
 
 using namespace std;
@@ -22,6 +23,7 @@ void print(const char * s, Args... args)
 
 	pid_t actualTest = fork(); stdOut = 1;
 	setbuf(stdout, NULL);
+	setlocale(LC_ALL, "");
 	if (actualTest < 0)
 		throw std::runtime_error("I have dropped my fork");
 	else if (actualTest == 0)
