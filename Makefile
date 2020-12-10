@@ -7,7 +7,7 @@ UTILS_PATH		= utils/
 UTILS			= $(addprefix $(UTILS_PATH), sigsegv.cpp color.cpp check.cpp)
 
 TESTS_PATH		= tests/
-MANDATORY		= c s p d i u x upperx percent mix
+MANDATORY		= c s p d i u x upperx percent mix weird
 VMANDATORY		= $(addprefix v, $(MANDATORY))
 
 BONUS			= n c_l s_l
@@ -21,7 +21,7 @@ TEST_NUMBER := $(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
 $(eval $(TEST_NUMBER):;@:)
 
 $(MANDATORY): %: mandatory_start
-	@$(CC) $(CFLAGS) -D TIMEOUT_US=$(TIMEOUT_US) -fsanitize=address $(UTILS) $(TESTS_PATH)$*_test.cpp -L.. -lftprintf && ./a.out $(TEST_NUMBER) && rm -f a.out
+	@$(CC) $(CFLAGS) -D TIMEOUT_US=$(TIMEOUT_US) -fsanitize=address $(UTILS) $(TESTS_PATH)$*_test.cpp -L.. -lftprintf && ASAN_OPTIONS=check_printf=0 ./a.out $(TEST_NUMBER) && rm -f a.out
 
 $(VMANDATORY): v%: mandatory_start
 	@$(CC) $(CFLAGS) -D TIMEOUT_US=$(TIMEOUT_US) $(UTILS) $(TESTS_PATH)$*_test.cpp -L.. -lftprintf && $(VALGRIND) ./a.out $(TEST_NUMBER) && rm -f a.out
