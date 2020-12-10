@@ -8,18 +8,19 @@ extern "C"
 #include "sigsegv.hpp"
 #include "check.hpp"
 #include "print.hpp"
-#define TEST_LIMIT 75
+#define TEST_LIMIT 90
 
 int iTest = 1;
 bool showTest = false;
 
-static void generate_width_test(const char *fmt, int ac, int testNumber, int start, int width)
+static void generate_width_test(const char *fmt, int ac, int testNumber, int *count, int width)
 {
-	if (ac == 1 || testNumber == start + 1) print(fmt, width, L'\0');
-	if (ac == 1 || testNumber == start + 2) print(fmt, width, L'$');
-	if (ac == 1 || testNumber == start + 3) print(fmt, width, L'¢');
-	if (ac == 1 || testNumber == start + 4) print(fmt, width, L'ह');
-	if (ac == 1 || testNumber == start + 5) print(fmt, width, L'𐍈');
+	if (ac == 1 || testNumber == (*count += 1)) print(fmt, width, L'\0');
+	if (ac == 1 || testNumber == (*count += 1)) print(fmt, width, L'$');
+	if (ac == 1 || testNumber == (*count += 1)) print(fmt, width, L'¢');
+	if (ac == 1 || testNumber == (*count += 1)) print(fmt, width, L'ह');
+	if (ac == 1 || testNumber == (*count += 1)) print(fmt, width, L'𐍈');
+	if (ac == 1 || testNumber == (*count += 1)) print(fmt, width, 0xFFFFFFFF);
 }
 
 int main(int ac, char ** av)
@@ -37,29 +38,31 @@ int main(int ac, char ** av)
 		showTest = true;
 	}
 	cout << endl;
-	if (ac == 1 || testNumber == 1) print("%lc", L'\0');
-	if (ac == 1 || testNumber == 2) print("%lc", L'$');
-	if (ac == 1 || testNumber == 3) print("%lc", L'¢');
-	if (ac == 1 || testNumber == 4) print("%lc", L'ह');
-	if (ac == 1 || testNumber == 5) print("%lc", L'𐍈');
 
 	int count = 0;
 
-	generate_width_test("%*lc", ac, testNumber, count += 5, 1);
-	generate_width_test("%*lc", ac, testNumber, count += 5, 2);
-	generate_width_test("%*lc", ac, testNumber, count += 5, 3);
-	generate_width_test("%*lc", ac, testNumber, count += 5, 4);
-	generate_width_test("%*lc", ac, testNumber, count += 5, 5);
-	generate_width_test("%*lc", ac, testNumber, count += 5, 6);
-	generate_width_test("%*lc", ac, testNumber, count += 5, 7);
+	if (ac == 1 || testNumber == ++count) print("test: %lc", L'\0');
+	if (ac == 1 || testNumber == ++count) print("test: %lc", L'$');
+	if (ac == 1 || testNumber == ++count) print("test: %lc", L'¢');
+	if (ac == 1 || testNumber == ++count) print("test: %lc", L'ह');
+	if (ac == 1 || testNumber == ++count) print("test: %lc", L'𐍈');
+	if (ac == 1 || testNumber == ++count) print("test: %lc", 0xFFFFFFFF);
 
-	generate_width_test("%-*lc", ac, testNumber, count += 5, 1);
-	generate_width_test("%-*lc", ac, testNumber, count += 5, 2);
-	generate_width_test("%-*lc", ac, testNumber, count += 5, 3);
-	generate_width_test("%-*lc", ac, testNumber, count += 5, 4);
-	generate_width_test("%-*lc", ac, testNumber, count += 5, 5);
-	generate_width_test("%-*lc", ac, testNumber, count += 5, 6);
-	generate_width_test("%-*lc", ac, testNumber, count += 5, 7);
+	generate_width_test("test: %*lc", ac, testNumber, &count, 1);
+	generate_width_test("test: %*lc", ac, testNumber, &count, 2);
+	generate_width_test("test: %*lc", ac, testNumber, &count, 3);
+	generate_width_test("test: %*lc", ac, testNumber, &count, 4);
+	generate_width_test("test: %*lc", ac, testNumber, &count, 5);
+	generate_width_test("test: %*lc", ac, testNumber, &count, 6);
+	generate_width_test("test: %*lc", ac, testNumber, &count, 7);
+
+	generate_width_test("test: %-*lc", ac, testNumber, &count, 1);
+	generate_width_test("test: %-*lc", ac, testNumber, &count, 2);
+	generate_width_test("test: %-*lc", ac, testNumber, &count, 3);
+	generate_width_test("test: %-*lc", ac, testNumber, &count, 4);
+	generate_width_test("test: %-*lc", ac, testNumber, &count, 5);
+	generate_width_test("test: %-*lc", ac, testNumber, &count, 6);
+	generate_width_test("test: %-*lc", ac, testNumber, &count, 7);
 	cout << ENDL;
 	return (0);
 }
