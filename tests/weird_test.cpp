@@ -8,7 +8,7 @@ extern "C"
 #include "sigsegv.hpp"
 #include "check.hpp"
 #include "print.hpp"
-#define TEST_LIMIT 108
+#define TEST_LIMIT 16
 #define TEST(...) if (ac == 1 || testNumber == ++current) print(__VA_ARGS__);
 
 int iTest = 1;
